@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <link rel="stylesheet" href="/css/reset.css">
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+        <link rel="stylesheet" href="/css/material.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>平板叫料界面</title>
+</head>
+<body>
+<div class="container">
+    <div class="header"> <h1>物料选择表</h1></div>
+    <div class="headbar">
+        <span>物料</span>
+        <span>站点</span>
+        <span>选择</span>
+    </div>
+    <div class="list1">
+        <ol type="1">
+            <li>
+                <span>1.连接头</span>
+                <select  id="select1" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check1">
+            </li>
+            <li><span>2.采集板</span>
+                <select  id="select2" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check2"></li>
+            <li><span>3.过程接头</span>
+                <select  id="select3" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check3"></li>
+            <li><span>4.压力表体组件</span>
+                <select  id="select4" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check4"></li>
+            <li><span>5.压力隔离膜片</span>
+                <select  id="select5" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check5"></li>
+            <li><span>6.差压膜盒体组件</span>
+                <select  id="select6" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check6"></li>
+            <li><span>7.差压隔离膜片</span>
+                <select  id="select7" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check7"></li>
+            <li><span>8.压力型测量头组件</span>
+                <select  id="select8" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check8"></li>
+            <li><span>9.差压型测量头组件</span>
+                <select  id="select9" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check9"></li>
+            <li><span>10.容室法兰</span>
+                <select  id="select10" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check10"></li>
+            <li><span>11.排气钉/芯组件</span>
+                <select  id="select11" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check11"></li>
+            <li><span>12.过程盲塞</span>
+                <select  id="select12" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check12"></li>
+            <li><span>13.外壳组件（铝）</span>
+                <select  id="select13" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check13"></li>
+            <li><span>14.外壳组件（不锈钢）</span>
+                <select  id="select14" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check14"></li>
+            <li ><span>15.视窗盖组件（铝）</span>
+                <select  id="select15" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check15"></li>
+            <li class="box1"><span>16.视窗盖组件（不锈钢）</span>
+                <select  id="select16" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check16"></li>
+            <li><span>17.盲盖（铝）</span>
+                <select  id="select17" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check17"></li>
+            <li><span>18.盲盖（不锈钢）</span>
+                <select  id="select18" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check18"></li>
+            <li><span>19.主板</span>
+                <select  id="select19" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check19"></li>
+            <li><span>20.端子板</span>
+                <select  id="select20" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check20"></li>
+            <li><span>21.显示器</span>
+                <select  id="select21" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check21"></li>
+            <li><span>22.测压法兰座（2寸）</span>
+                <select  id="select22" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check22"></li>
+            <li><span>23.测压法兰座（3寸）</span>
+                <select  id="select23" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check23"></li>
+            <li class="box1"><span>24.变送器成品（压力型基表，铝壳）</span>
+                <select  id="select24" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check24"></li>
+            <li class="box1"><span>25.变送器成品（压力型基表，不锈钢壳）</span>
+                <select  id="select25" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check25"></li>
+            <li class="box1"><span>26.变送器成品（差压型基表，铝壳）</span>
+                <select  id="select26" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check26"></li>
+            <li class="box1"><span>27.变送器成品（差压型基表，不锈钢壳）</span>
+                <select  id="select27" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check27"></li>
+            <li class="box1"><span>28.变送器成品（法兰表）</span>
+                <select  id="select28" class="selector" >
+                    <option value="0">请选择站点</option>
+                    <option value="A" >A</option>
+                    <option value="B" >B</option>
+                    <option value="C1" >C1</option>
+                    <option value="C2" >C2</option>
+                    <option value="D" >D</option>
+                    <option value="E" >E</option>
+                    <option value="F" >F</option>
+                    <option value="G" >G</option>
+                </select>
+                <input type="checkbox" id="check28"></li>
+        </ol>
+        <button onclick="window.location.href='/newpage'" type="button" class="btn01">确认</button>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+<!--        <br>-->
+<!--        <button type="button" class="btn01">返回</button>-->
+    </div>
+</div>
+</body>
+<script>
+var checkList=new Object()
+//只能用数组判断去重，不能用对象
+var selectList= new Array()
+var simpleList =new Array()
+var num=new Array()
+var taskNum = new Array()
+var couple = new Map()
+var map1 = new Map()
+var map2 = new Map()
+var map3 = new Map()
+var map4 = new Map()
+    $('.btn01').click(function () {
+        checkList = $("li>input:checked")
+
+        for (var i = 0; i < checkList.length; i++) {
+            var bro
+            bro = checkList[i].previousElementSibling.value
+            selectList[i] = bro
+            var num = [...checkList]
+            couple.set(num[i],bro)
+            // console.log(couple)
+        }
+
+
+        simpleList=couple.values()
+        num = taskJudge([...simpleList])
+        taskNum = delNum(num)
+        console.log("执行任务:"+taskNum)
+
+        if (taskNum.length > 3) {
+            alert("请选择能在三个任务以内完成的物料！")
+            history.go(0);
+
+        }
+        if (taskNum.length <= 3) {
+            $.ajax({
+                url: "/judge",
+                type: "post",
+                // dataType: "json",
+                data: {
+                    taskNumber: [...taskNum],
+                    // task1: [...map1],
+                    task1: JSON.stringify([...map1]),
+                    task2: JSON.stringify([...map2]),
+                    task3: JSON.stringify([...map3]),
+                    task4: JSON.stringify([...map4])
+                },
+                async: true,
+                success: function (response1) {
+                    console.log(taskNum)
+                    console.log("发送成功！")
+                }
+            })
+        }
+    })
+       // 去重
+function delNum(List) {
+    var list = new Array()
+    for( var i=0;i<List.length;i++){
+       if(list.indexOf(List[i]) == -1){
+           list.push(List[i])
+            }
+        }
+    return list
+}
+
+//判断在哪个任务中
+function taskJudge(simpleList) {
+    var task=new Array()
+    for(var i=0;i<simpleList.length;i++){
+        if(simpleList[i]=="A" ||simpleList[i]=="B"){
+           task.push("1")
+            var keys1 = couple.keys()
+            var key1 = [...keys1][i].id
+            map1.set(key1,simpleList[i])
+
+        }
+        if(simpleList[i]=="D" ||simpleList[i]=="C1"||simpleList[i]=="C2"){
+            task.push("2")
+            var keys2 = couple.keys()
+            var key2 = [...keys2][i].id
+            map2.set(key2,simpleList[i])
+        }
+        if(simpleList[i]=="E"){
+            task.push("3")
+            var keys3 = couple.keys()
+            var key3 = [...keys3][i].id
+            map3.set(key3,simpleList[i])
+        }
+        if(simpleList[i]=="G"){
+            task.push("4")
+            var keys4 = couple.keys()
+            var key4 = [...keys4][i].id
+            map4.set(key4,simpleList[i])
+        }
+    }
+    for(var i=0;i<simpleList.length;i++){
+        if(simpleList[i]=="F"){
+            for (var j=0;j<simpleList.length;j++){
+                if(simpleList[j]=="D" ||simpleList[j]=="C1"||simpleList[j]=="C2"){
+                    for(var n=0;n<simpleList.length;n++){
+                        if(simpleList[n]=="G"){
+                            task.push("4")
+                            var keys5 = couple.keys()
+                            var key5 = [...keys5][i].id
+                            map4.set(key5,simpleList[i])
+                        }else {
+                            task.push("2")
+                            var keys6 = couple.keys()
+                            var key6 = [...keys6][i].id
+                            map2.set(key6,simpleList[i])
+                        }
+                    }
+
+                }
+        }
+        }
+
+    }
+    console.log(map1)
+    console.log(map2)
+    console.log(map3)
+    console.log(map4)
+    return task
+}
+
+
+
+
+
+</script>
+</html>

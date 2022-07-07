@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/axios.min.js"></script>
+
+    <title>平板监控界面</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        #box{
+            min-width: 100%;
+            position: absolute;
+            background: #eff3f6 bottom;
+            /*min-height: 100%;*/
+            min-height: 1064px;
+            /*overflow: hidden;*/
+        }
+        #left{
+            margin-left:0px;
+            position: absolute;
+            box-sizing: border-box;
+            width: 700px;
+            height: 100%;
+            background: #4d5e70 bottom;
+        }
+
+
+        #right{
+            box-sizing: border-box;
+            float: left;
+            box-sizing: border-box;
+            padding-left: 700px;
+            /*overflow-y: overlay;*/
+            /*overflow-x: hidden;*/
+            clear: both;
+            color: #717592;
+            min-width: 100%;
+            min-height: 1064px;
+        }
+        #LQ21,#RQ21 {
+            /*display: block;*/
+            width: 500px;
+            height: 150px;
+            padding: 5px;
+            /*设置边框，与文字保持距离 border: solid;*/
+            margin: 0 auto;
+            /*div在页面居中 border: solid 1 px rgba(102, 146, 191, 0.68);*/
+            border-radius: 20px;
+            /*边框圆角 -moz-box-shadow: 2 px 2 px 10 px #909090;*/
+            -webkit-box-shadow: 2px 2px 10px #909090;
+            box-shadow: 2px 2px 10px #909090;
+            /*text-align: center;//文字居中*/
+            line-height: 30px;
+            /*设置字体行间距 overflow: hidden;*/
+            /*文字过多时隐藏，不滚动*/
+        }
+
+        #LQ22,#RQ22 {
+            width: 500px;
+            height: 150px;
+            /*text-align: center;*/
+            padding: 5px;
+            /*/ / 设置边框，与文字保持距离 border: solid;*/
+            margin: 0 auto;
+            border: solid 1px rgba(102, 146, 191, 0.68);
+            border-radius: 20px;
+            -moz-box-shadow: 2px 2px 10px #909090;
+            -webkit-box-shadow: 2px 2px 10px #909090;
+            box-shadow: 2px 2px 10px #909090;
+            line-height: 30px;
+            /*/ / 设置字体行间距 overflow: hidden;*/
+            /*/ / 文字过多时隐藏，不滚动*/
+
+        }
+
+        #LQ23,#RQ23 {
+            width: 500px;
+            height: 150px;
+
+            border: solid;
+            margin: 0 auto;
+            /*text-align: center;*/
+            border: solid 1px rgba(102, 146, 191, 0.68);
+
+            border-radius: 20px;
+            -moz-box-shadow: 2px 2px 10px #909090;
+            -webkit-box-shadow: 2px 2px 10px #909090;
+            box-shadow: 2px 2px 10px #909090;
+
+            line-height: 30px;
+            /*/ / 设置字体行间距 overflow: auto;*/
+
+        }
+
+        #text1 {
+            display: block;
+            width: 500px;
+        }
+
+
+        #Lbtn000,#Lbtn00,#Lbtn01, #Lbtn02, #Lbtn03 {
+            display: inline-block;
+            margin-left: 100px;
+            position: relative;
+            background:orangered;
+            border: none;
+            color: white;
+            padding: 15px 24px;
+            font-size: 1.4rem;
+            outline: none;
+            box-shadow: -6px 6px 0 hsl(16, 100%, 30%);
+
+        }
+
+        #Lbtn00::before,#Lbtn01::before, #Lbtn02::before, #Lbtn03::before {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            position: absolute;
+            top: 0;
+            left: -6px;
+            border: 6px solid transparent;
+            border-right: 6px solid hsl(16, 100%, 30%);
+            border-left-width: 0px;
+            /*display:inline-block; //按钮在同一行显示*/
+
+        }
+
+        #Lbtn00::after,#Lbtn01::after, #Lbtn02::after, #Lbtn03::after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            position: absolute;
+            bottom: -6px;
+            right: 0;
+            border: 6px solid transparent;
+            border-top: 6px solid hsl(16, 100%, 30%);
+            border-bottom-width: 0px;
+        }
+
+        #Lbtn00:active,#Lbtn01:active, #Lbtn02:active, #Lbtn03:active {
+            background: hsl(16, 100%, 40%);
+            top: 3px;
+            left: -3px;
+            box-shadow: -3px 3px 0 hsl(16, 100%, 30%);
+        }
+
+        #Lbtn00:active::before,#Lbtn01:active::before, #Lbtn02:active::before, #Lbtn03:active::before {
+            border: 3px solid transparent;
+            border-right: 3px solid hsl(16, 100%, 30%);
+            border-left-width: 0px;
+            left: -3px;
+        }
+
+        #Lbtn00:active::after,#Lbtn01:active::after, #Lbtn02:active::after, #Lbtn03:active::after {
+            border: 3px solid transparent;
+            border-top: 3px solid hsl(16, 100%, 30%);
+            border-bottom-width: 0px;
+            bottom: -3px;
+        }
+
+        #Rbtn00,#Rbtn11,#Rbtn12,#Rbtn13,
+        #Rbtn01,#Rbtn02,#Rbtn03{
+            display: inline-block;
+            margin-left: 120px;
+            position: relative;
+            background:cornflowerblue;
+            border: none;
+            color: white;
+            padding: 15px 24px;
+            font-size: 1.4rem;
+            outline: none;
+            box-shadow: -6px 6px 0 hsl(229, 69%, 50%);
+        }
+
+        #Rbtn00::after,#Rbtn11::after,#Rbtn12::after,#Rbtn13::after,
+        #Rbtn01::after,#Rbtn02::after,#Rbtn03::after{
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            position: absolute;
+            bottom: -6px;
+            right: 0;
+            border: 6px solid transparent;
+            border-top: 6px solid hsl(229, 69%, 50%);
+            border-bottom-width: 0px;
+        }
+
+        #Rbtn00:active,#Rbtn11:active,#Rbtn12:active,#Rbtn13:active,
+        #Rbtn01:active,#Rbtn02:active,#Rbtn03:active {
+            background: hsl(229, 69%, 50%);
+            top: 3px;
+            left: -3px;
+            box-shadow: -3px 3px 0 hsl(229, 69%, 50%);
+        }
+
+        #Rbtn00:active::before,#Rbtn11:active::before,#Rbtn12:active::before,#Rbtn13:active::before,
+        #Rbtn01:active::before,#Rbtn02:active::before,#Rbtn03:active::before {
+            border: 3px solid transparent;
+            border-right: 3px solid hsl(229, 69%, 50%);
+            border-left-width: 0px;
+            left: -3px;
+        }
+
+        #Rbtn00:active::after,#Rbtn11:active::after,#Rbtn12:active::after,#Rbtn13:active::after,
+        #Rbtn01:active::after,#Rbtn02:active::after,#Rbtn03:active::after {
+            border: 3px solid transparent;
+            border-top: 3px solid hsl(229, 69%, 50%);
+            border-bottom-width: 0px;
+            bottom: -3px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="box">
+<!--左边PDA界面-->
+    <div id="left">
+        <div id="Q20">
+            <button id="Lbtn00">返回充电区</button>
+            <button id="Lbtn000">解封</button>
+        </div>
+
+
+        <div style="margin-left: 100px; color: white" >Q2-1车任务清单</div><br>
+        <div id="LQ21"></div>
+        <br>
+        <button id="Lbtn01">确定</button>
+
+
+        <div style="margin-left: 100px; color:white">Q2-2车任务清单</div><br>
+        <div id="LQ22"></div>
+        <br>
+        <button id="Lbtn02">确定</button>
+
+
+        <div style="margin-left: 100px; color: white">Q2-3车任务清单</div><br>
+        <div id="LQ23"></div>
+        <br>
+        <button id="Lbtn03">确定</button>
+    </div>
+
+    <!-- 右边是平板界面-->
+    <div id="right">
+        <div id="RQ20">
+            <button id="Rbtn00" onclick="window.location.href='/material'" type="button">平板叫料</button>
+
+        </div>
+        <br> <br>
+
+        <div id="RQ21"></div>
+        <br>
+        <button id="Rbtn11">呼叫agv小车</button>
+        <button id="Rbtn01">确定</button>
+        <br><br>
+
+        <div id="RQ22"></div>
+        <br>
+        <button id="Rbtn12">呼叫agv小车</button>
+        <button id="Rbtn02">确定</button>
+        <br><br>
+
+        <div id="RQ23"></div>
+        <br>
+        <button id="Rbtn13">呼叫agv小车</button>
+        <button id="Rbtn03">确定</button>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    var agv1 = document.getElementById("LQ21");//获取左边栏的div事件
+    var agv2 = document.getElementById("LQ22");
+    var agv3 = document.getElementById("LQ23");
+
+    var agv4 = document.getElementById("RQ21");
+    var agv5 = document.getElementById("RQ22");
+    var agv6 = document.getElementById("RQ23");
+
+    var text1 = document.getElementById("text1")
+
+    var Lbtn00 = document.getElementById("Lbtn00");//获取左边栏的按键事件
+    var Lbtn000 = document.getElementById("Lbtn000");
+    var Lbtn01 = document.getElementById("Lbtn01");//获取按键事件
+    var Lbtn02 = document.getElementById("Lbtn02");
+    var Lbtn03 = document.getElementById("Lbtn03");
+
+    var Rbtn00 = document.getElementById("Rbtn00");//获取右边栏的按键事件,平板叫料键
+    var Rbtn01 = document.getElementById("Rbtn01");//确定并清除键
+    var Rbtn02 = document.getElementById("Rbtn02");
+    var Rbtn03 = document.getElementById("Rbtn03");
+    var Rbtn11 = document.getElementById("Rbtn11");//选择小车按键
+    var Rbtn12 = document.getElementById("Rbtn12");
+    var Rbtn13 = document.getElementById("Rbtn13");
+
+
+    var task1 = ["运输货物（单次）:", "外壳组件（铝）0.45kg，7盒", "外壳组件（不锈钢）1.63kg，2盒",
+        "主板0.36kg,1盒", "端子板1盒", "显示器1盒"];
+    var task2 = ["运输货物（单次）：", "容室法兰0.64kg 14盒；", "排气钉 1盒；",
+        "过程盲塞 4盒；", "视窗盖（铝）0.23kg 1盒；视窗盖（钢）1.63kg 1盒；盲盖（铝）0.1kg 1盒；",
+        "盲盖（钢）0.36kg 1盒}四种大小一致"];
+    var task3 = ["运输货物（单次）：", "压差膜盒体组件8.68kg/盒 12盒；", "采集板 2盒；",
+        "连接头3.96kg/盒 3盒；", "过程接头0.26kg 3盒；", "压力表体组件 1盒；"];
+    var task4 = ["运输货物（单次）：", "外壳组件（铝）0.54kg 4盒；", "外壳组件（不锈钢）1.63kg 1盒；"
+        , "主板0.36kg 1盒；", "端子板 1盒；", "显示器 1盒；", "容室法兰0.64kg 3盒；", "排气钉 1盒；"
+        , "测压法兰座（2寸）1.46kg 16盒；", "测压法兰座（3寸）2.44kg 16盒。"]
+
+    //一旦触发按钮，小车就停止作业返回充电区
+    Lbtn00.onclick = function(){
+        $.ajax({
+            url:"/agvBack",
+            type:"post",
+            data:{
+                "flag":"back"
+            },
+            success:function (data){
+                //alert("小车准备返回充电区");
+                // if(data == back){
+                    $.ajax({
+                        url:"",
+                        type:"post",
+                        dataType: "json",
+                        data: data,
+                        success:function (data){
+                            alert("小车已经回到充电区");
+                        }
+                    })
+                // }
+            }
+        })
+    }
+    //一旦触发按钮，小车解封
+    Lbtn000.onclick = function(){
+        $.ajax({
+            url:"/agvBack1",
+            type:"post",
+            data:{
+                "flag":"back"
+            },
+            success:function (data){
+                //alert("小车准备返回充电区");
+                // if(data == back){
+                $.ajax({
+                    url:"",
+                    type:"post",
+                    dataType: "json",
+                    data: data,
+                    success:function (data){
+                        alert("小车已经回到充电区");
+                    }
+                })
+                // }
+            }
+        })
+    }
+
+    setInterval(function () {//定时器
+        getMsg();
+    }, 1000);
+
+
+    function getMsg() {
+        $.ajax({
+            url: "/new1", //后端的接口，不断向后端发起询问
+            type: 'post',
+            success: function (data1) {
+                //console.log(data1);
+
+                if (data1 != "W-W") {
+                    let split = data1.split("-");
+                    let data = [];
+                    data[0] = split[0];
+                    data[1] = split[1];
+                    if (data[0] == "LQ21") {
+                        switch (data[1]) {//判断后端传的data数据是符合哪一个任务号
+                            case "1":
+                                agv1.innerHTML = task1;
+                                break;
+                            case "2":
+                                agv1.innerHTML = task2;
+                                break;
+                            case "3":
+                                agv1.innerHTML = task3;
+                                break;
+                            case "4":
+                                agv1.innerHTML = task4;
+                                break;
+                            case "5":
+                                agv1.innerHTML = " ";
+                        }
+                    }
+                } else {
+                    agv1.innerHTML = " ";
+                }
+            }
+        })
+
+
+        $.ajax({
+            url: "/new2", //后端的接口，不断向后端发起询问
+            type: 'post',
+            success: function (data1) {
+                //console.log(data1);
+                if (data1 != "W-W") {
+                    let split = data1.split("-");
+                    let data = [];
+                    data[0] = split[0];
+                    data[1] = split[1];
+                    if (data[0] == "LQ22") {
+                        switch (data[1]) {//判断后端传的data数据是符合哪一个任务号
+                            case "1":
+                                agv2.innerHTML = task1;
+                                break;
+                            case "2":
+                                agv2.innerHTML = task2;
+                                break;
+                            case "3":
+                                agv2.innerHTML = task3;
+                                break;
+                            case "4":
+                                agv2.innerHTML = task4;
+                                break;
+                            case "5":
+                                agv2.innerHTML = " ";
+                        }
+                    }
+                } else {
+                    agv2.innerHTML = " ";
+                }
+            }
+        })
+
+
+        $.ajax({
+            url: "/new3", //后端的接口，不断向后端发起询问
+            type: 'post',
+            success: function (data1) {
+                //console.log(data1);
+
+                if (data1 != "W-W") {
+                    let split = data1.split("-");
+                    let data = [];
+                    data[0] = split[0];
+                    data[1] = split[1];
+                    if (data[0] == "LQ23") {
+                        switch (data[1]) {//判断后端传的data数据是符合哪一个任务号
+                            case "1":
+                                agv3.innerHTML = task1;
+                                break;
+                            case "2":
+                                agv3.innerHTML = task2;
+                                break;
+                            case "3":
+                                agv3.innerHTML = task3;
+                                break;
+                            case "4":
+                                agv3.innerHTML = task4;
+                                break;
+                            case "5":
+                                agv3.innerHTML = " ";
+                        }
+                    }
+                } else {
+                    agv3.innerHTML = " ";
+                }
+            }
+        })
+    }
+
+    Lbtn01.onclick = function () {
+        // agv1.innerHTML = " ";
+        $.ajax({
+            url: "/newer1", //后端的接口，不断向后端发起询问
+            type: 'post',
+            data: {
+                "flag": "stop"
+            },
+            success: function (data1) {
+
+            }
+        });
+    };
+    Lbtn02.onclick = function () {
+        // agv2.innerHTML = " ";
+        $.ajax({
+            url: "/newer2", //后端的接口，不断向后端发起询问
+            type: 'post',
+            data: {
+                "flag": "stop"
+            },
+            success: function (data1) {
+
+            }
+        });
+    };
+    Lbtn03.onclick = function () {
+        // agv3.innerHTML = " ";
+        $.ajax({
+            url: "/newer3", //后端的接口，不断向后端发起询问
+            type: 'post',
+            data: {
+                "flag": "stop"
+            },
+            success: function (data1) {
+
+            }
+        });
+    };
+
+
+
+    //选车按键，点击和服务器交互选中小车前来装填物料
+    Rbtn11.onclick = function(){//选车按键，和服务器进行交互
+        $.ajax({
+            url:"/selectAgv1",//新加
+            type:"post",
+            data:{
+                "flag":"select1"
+            },
+            success:function(data){
+               $.ajax({
+                   url:"",
+                   type:"post",
+                   success:function(data){
+                       alert("小车1正在前来");
+                   }
+               })
+            }
+        })
+    }
+    Rbtn12.onclick = function(){//选车按键，和服务器进行交互
+        $.ajax({
+            url:"selectAgv2",//新加
+            type:"post",
+            data:{
+                "flag":"select2"
+            },
+            success:function(data){
+                $.ajax({
+                    url:"",
+                    type:"post",
+                    success:function(data){
+                        alert("小车2正在前来");
+                    }
+                })
+            }
+        })
+    }
+    Rbtn13.onclick = function(){//选车按键，和服务器进行交互
+        $.ajax({
+            url:"selectAgv3",//新加
+            type:"post",
+            data:{
+                "flag":"select3"
+            },
+            success:function(data){
+                console.log(data);
+                $.ajax({
+                    url:"",
+                    type:"post",
+                    success:function(data){
+                        alert("小车3正在前来");
+                    }
+                })
+            }
+        })
+    }
+
+
+
+
+
+    setInterval(function(){//开启定时器，平板界面不断像后端进行问询
+        getMsg1();
+    },1000);
+
+    //将平板选择的物料显示在对应的文本框中，点击“确定”进行清除
+    function getMsg1(){
+        $.ajax({
+            url:"/pad1",//需要加接口
+            type:"post",
+            success:function(data1){
+                agv4.innerText = data1;
+            }
+        });
+        $.ajax({
+            url:"/pad2",//需要加接口
+            type:"post",
+            success:function(data1){
+                agv5.innerText = data1;
+            }
+        });
+        $.ajax({
+            url:"/pad3",//需要加接口
+            type:"post",
+            success:function(data1){
+                agv6.innerText = data1;
+            }
+        })
+    }
+
+    Rbtn01.onclick = function(){
+        $.ajax({
+            url:"/padStop1",
+            type:"post",
+            data:{
+                "flag":"clear"
+            },
+            success:function (data){
+
+            }
+        });
+    }
+    Rbtn02.onclick = function(){
+        $.ajax({
+            url:"/padStop2",
+            type:"post",
+            data:{
+                "flag":"clear"
+            },
+            success:function (data){
+
+            }
+        });
+    }
+    Rbtn03.onclick = function(){
+        $.ajax({
+            url:"/padStop3",
+            type:"post",
+            data:{
+                "flag":"clear"
+            },
+            success:function (data){
+
+            }
+        });
+    }
+
+
+
+</script>
+</html>

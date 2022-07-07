@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/base.css">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <title>task1</title>
+</head>
+<body>
+<div class="container">
+    <div class="box w">
+        <div class="header"> <h1>四联AGV调度系统</h1></div>
+        <div class="col-md-3 Q4 hidden-xs"></div>
+    </div>
+    <div class="Q2">
+        <div class="name">车辆状态</div>
+        <input type="text" id="reN1" disabled="disabled" value="agv1">
+        <br>
+        <input type="text" id="reN2" disabled="disabled" value="agv2">
+        <br>
+        <input type="text" id="reN3" disabled="disabled" value="agv3">
+        <br>
+        <input type="text" id="reN4" disabled="disabled" value="agv4">
+        <br>
+        <button id="n1-mis1" class="task">任务一</button>
+        <br>
+        <div class="stopDiv">
+            <span class="option-text">请选择停止车辆:</span>
+            <select class="agvName" id="agvName">
+                <option value="0">请选择车辆</option>
+                <option value="348" >Q2-1</option>
+                <option value="105" >Q2-2</option>
+                <option value="789" >Q2-3</option>
+                <option value="233" >Q3</option>
+            </select>
+            <br>
+            <button type="submit" value="停止" id="Stop">停止</button>
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+    var textN1 =document.getElementById("reN1");
+    var textN2 =document.getElementById("reN2");
+    var textN3 =document.getElementById("reN3");
+    var textN4 =document.getElementById("reN4");
+    var Task1=document.getElementById("n1-mis1");
+    var Stop=document.getElementById("Stop");
+    var TIMER
+    var agvCode
+
+//     var agv =document.getElementById("agvName").value
+// console.log(agv)
+    QueryAgv()
+    function task(missionNum) {
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: missionNum
+            },
+            async: true,
+            success: function (response) {
+                console.log(response);
+                if (response != null) {
+                    $.ajax({
+                        url: "http://10.18.2.221:9998/rcms/services/rest/hikRpcService/genAgvSchedulingTask",
+                        type: "post",
+                        dataType: "json",
+                        data: response,
+                        async: true,
+                        success: function (content) {
+                            console.log(content);
+                            var misCodes=content.data
+                            agvCode = queryAgvCode(misCodes)
+                            send("1",agvCode)
+                        }
+                    });
+                }
+            }
+        });
+    }
+    function send(missionNum,agvCode){
+        $.ajax({
+            url: "/send",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission:missionNum ,
+                agv:agvCode
+            },
+            async: true,
+            success: function (response) {
+            }
+        });
+    }
+    function queryAgvCode(misCodes){
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: "5",
+                taskCodes: misCodes
+            },
+            async: true,
+            success: function (response) {
+                console.log(response);
+                if (response != null) {
+                    $.ajax({
+                        url: "http://10.18.2.221:9998/rcms/services/rest/hikRpcService/queryTaskStatus",
+                        type: "post",
+                        dataType: "json",
+                        data: response,
+                        async: true,
+                        success: function (mes2) {
+                            console.log(mes2)
+                            var agvCode
+                            agvCode = mes2.data[0].agvCode
+                            return agvCode;
+
+
+                        }
+                    });
+                }
+            }
+        });
+    }
+    function QueryAgv(){
+        //查询agv状态
+        TIMER=setInterval(function () {
+            queryAgv()
+        },5000)
+
+    }
+    function queryAgv(){
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: "8",
+            },
+            async: true,
+            success: function (response1) {
+                $.ajax({
+                    url: "http://10.18.2.46:9998/rcms-dps/rest/queryAgvStatus",
+                    type: "post",
+                    dataType: "json",
+                    data: response1,
+                    async: true,
+                    success: function (response2) {
+                        console.log(response2);
+                        var obj1=JSON.parse(response2)
+                        var obj2=obj1.data
+                        console.log(obj2)
+                        for(var i=0;i<obj2.length;i++){
+                            //Q2-1
+                            if(obj2[i].robotCode=="348"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN1,"Q2-1")
+                            }
+
+                            //Q2-2
+                            if(obj2[i].robotCode=="105"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN2,"Q2-2")
+                            }
+
+                            //Q2-3
+                            if(obj2[i].robotCode=="789"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN3,"Q2-3")
+                            }
+
+                            //Q3
+                            if(obj2[i].robotCode=="233"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN4,"Q3")
+                            }
+                        }
+
+                    }
+                })
+            }
+        })
+    }
+    function agvStatus(status,agvText,agvNum) {
+        switch (status) {
+            case "1":
+                agvText.value = agvNum+"任务完成！";
+                break;
+            case "2":
+                agvText.value = agvNum+"任务执行中！";
+                break;
+            case "3":
+                agvText.value = agvNum+"任务异常";
+                break;
+            case "4":
+                agvText.value = agvNum+"待命";
+                break;
+            case "5":
+                agvText.value = agvNum+"机器人暂停";
+                break;
+            case "6":
+                agvText.value = agvNum+"举升货架状态";
+                break;
+            case "7":
+                agvText.value = agvNum+"充电状态";
+                break;
+            case "8":
+                agvText.value = agvNum+"弧线行走中";
+                break;
+            case "9":
+                agvText.value = agvNum+"充满维护";
+                break;
+            case "11":
+                agvText.value = agvNum+"背货未识别";
+                break;
+            case "12":
+                agvText.value = agvNum+"货架偏角过大";
+                break;
+            case "13":
+                agvText.value = agvNum+"运动库异常";
+                break;
+            case "14":
+                agvText.value = agvNum+"货码无法识别";
+                break;
+            case "15":
+                agvText.value = agvNum+"货码不匹配";
+                break;
+            case "16":
+                agvText.value = agvNum+"举升异常";
+                break;
+            case "17":
+                agvText.value = agvNum+"充电桩异常";
+                break;
+            case "18":
+                agvText.value = agvNum+"电量无增加";
+                break;
+            case "20":
+                agvText.value = agvNum+"充电指令角度错误";
+                break;
+            case "21":
+                agvText.value = agvNum+"平台下发指令错误";
+                break;
+            case "23":
+                agvText.value = agvNum+"外力下放";
+                break;
+            case "24":
+                agvText.value = agvNum+"货架位置偏移";
+                break;
+            case "25":
+                agvText.value = agvNum+"小车不在锁定区";
+                break;
+            case "26":
+                agvText.value = agvNum+"下放重试失败";
+                break;
+            case "27":
+                agvText.value = agvNum+"货架摆歪";
+                break;
+            case "28":
+                agvText.value = agvNum+"举升电池电量太低";
+                break;
+            case "29":
+                agvText.value = agvNum+"后退角度偏大";
+                break;
+            case "30":
+                agvText.value = agvNum+"未背货架举升";
+                break;
+            case "31":
+                agvText.value = agvNum+"区域锁定失败";
+                break;
+            case "33":
+                agvText.value = agvNum+"旋转申请暂时失败";
+                break;
+            case "34":
+                agvText.value = agvNum+"地图切换点地码未识别";
+                break;
+        }
+    }
+
+    function stopAgv(missionNum,agvNum){
+        console.log(agvNum)
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: missionNum,
+                agv: agvNum
+            },
+            async: true,
+            success: function (response) {
+                console.log(response);
+                if (response != null) {
+                    $.ajax({
+                        url: "http://10.18.2.221:9998/rcms/services/rest/hikRpcService/cancelTask",
+                        type: "post",
+                        dataType: "json",
+                        data: response,
+                        async: true,
+                        success: function (content) {
+                            speak('开始执行取消任务！');
+                        }
+                    });
+                }
+            }
+        });
+    }
+    //语音功能
+    function speak(sentence) {
+        const utterance = new SpeechSynthesisUtterance(sentence)
+        window.speechSynthesis.speak(utterance)
+    }
+
+
+   Task1.onclick=function () {
+       task("1")
+   }
+   Stop.onclick=function (){
+       var agv =document.getElementById("agvName").value
+       console.log(agv)
+        stopAgv("6",agv)
+   }
+
+
+</script>
+</html>

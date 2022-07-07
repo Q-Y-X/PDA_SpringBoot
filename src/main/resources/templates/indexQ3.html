@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/base.css">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+<div class="box w">
+    <div class="header"> <h1>四联AGV调度系统</h1></div>
+    <div style="display: none">
+        <div class="col-md-3 Q4 hidden-xs"></div>
+        <div class="Q2">
+            <div class="name">Q2-1</div>
+            <!--        文本框只读，但光标可以聚焦 readonly="readonly"-->
+            <input type="text" id="reN1" disabled="disabled" value="待命">
+            <!--        多行文本框-->
+            <!--        <textarea name="" id="" cols="20" rows="3" style="font-size: 18px">任务一正在执行，已到达A站点，即将前往B站点</textarea>-->
+            <br>
+            <button id="n1-mis1" class="task1">任务一</button>
+            <button id="n1-mis2" class="task2">任务二</button>
+            <button id="n1-mis3" class="task3">任务三</button>
+            <button id="n1-mis4" class="task4">任务四</button>
+            <br>
+            <button id="stopQ201" class="stop">停止</button>
+
+        </div>
+        <div class="col-md-3 Q4 hidden-ms"></div>
+        <div class="col-md-3 Q4 hidden-xs"></div>
+        <div class="Q2">
+            <div class="name">Q2-2</div><input type="text" id="reN2" disabled="disabled" value="待命">
+            <br>
+            <button id="n2-mis1" class="task1">任务一</button>
+            <button id="n2-mis2" class="task2">任务二</button>
+            <button id="n2-mis3" class="task3">任务三</button>
+            <button id="n2-mis4" class="task4">任务四</button>
+            <br>
+            <button id="stopQ202" class="stop">停止</button>
+        </div>
+        <div class="col-md-3 Q4 hidden-ms"></div>
+        <div class="col-md-3 Q4 hidden-xs"></div>
+        <div class="Q2">
+            <div class="name">Q2-3</div><input type="text" id="reN3" disabled="disabled" value="待命">
+            <br>
+            <button id="n3-mis1" class="task1">任务一</button>
+            <button id="n3-mis2" class="task2">任务二</button>
+            <button id="n3-mis3" class="task3">任务三</button>
+            <button id="n3-mis4" class="task4">任务四</button>
+            <br>
+            <button id="stopQ203" class="stop">停止</button>
+        </div>
+        <div class="col-md-3 Q4 hidden-ms"></div>
+    </div>
+
+    <div class="col-md-3 Q4 hidden-xs"></div>
+    <div class="Q3">
+        <div class="name">Q3</div>
+        <input type="text" id="reQ3" disabled="disabled" value="待命" >
+        <br>
+         <button id="Q3-mission" class="task1">任务一</button>
+        <button id="stopQ3" class="stop" style="display: none">停止</button>
+    </div>
+
+</div>
+</div>
+</body>
+<script>
+    <!--    Q2-1-->
+    var textN1 =document.getElementById("reN1");
+    var n1Task1=document.getElementById("n1-mis1");
+    var n1Task2=document.getElementById("n1-mis2");
+    var n1Task3=document.getElementById("n1-mis3");
+    var n1Task4=document.getElementById("n1-mis4");
+    var n1Timer1=null;
+    var n1Timer2=null;
+    var n1Timer3=null;
+    var n1Timer4=null;
+    var flag11=11;
+    var flag12=12;
+    var flag13=13;
+    var flag14=14;
+    var n1Stop=document.getElementById("stopQ201");
+
+    <!--    Q2-2-->
+    var textN2 =document.getElementById("reN2");
+    var n2Task1=document.getElementById("n2-mis1");
+    var n2Task2=document.getElementById("n2-mis2");
+    var n2Task3=document.getElementById("n2-mis3");
+    var n2Task4=document.getElementById("n2-mis4");
+    var n2Timer1=null;
+    var n2Timer2=null;
+    var n2Timer3=null;
+    var n2Timer4=null;
+    var flag21=21;
+    var flag22=22;
+    var flag23=23;
+    var flag24=24;
+    var n2Stop=document.getElementById("stopQ202");
+
+
+    <!--    Q2-3-->
+    var textN3 =document.getElementById("reN3");
+    var n3Task1=document.getElementById("n3-mis1");
+    var n3Task2=document.getElementById("n3-mis2");
+    var n3Task3=document.getElementById("n3-mis3");
+    var n3Task4=document.getElementById("n3-mis4");
+    var n3Timer1=null;
+    var n3Timer2=null;
+    var n3Timer3=null;
+    var n3Timer4=null;
+    var flag31=31;
+    var flag32=32;
+    var flag33=33;
+    var flag34=34;
+    var n3Stop=document.getElementById("stopQ203");
+
+    <!--    Q3-->
+    var textQ3 = document.getElementById("reQ3");
+    var Q3Task =document.getElementById("Q3-mission");
+    var Q3Stop = document.getElementById("stopQ3");
+    var Q3Timer =null;
+    var flag41=41;
+
+    //全局定时器，查询agv状态
+    var TIMER=null;
+
+    QueryAgv();
+    //参数：第几个任务（”1“）、小车编号（"Q2-1"）,按钮 obj，对应的显示的text obj,按钮颜色（"#00B4F4"），定时器名称，按钮标识
+    function task(missionNum,agvNum,agvMission ,agvText,buttonColor,timerName,flag) {
+        //关闭查询agv状态
+        clearInterval(TIMER);
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: missionNum,
+                agv: agvNum
+            },
+            async: true,
+            success: function (response) {
+                console.log(response);
+                if (response != null) {
+                    $.ajax({
+                        url: "http://10.18.2.36:9998/rcms/services/rest/hikRpcService/genAgvSchedulingTask",
+                        type: "post",
+                        dataType: "json",
+                        data: response,
+                        async: true,
+                        success: function (content) {
+                            console.log(content);
+                            var misCodes=content.data
+                            // n1Task1.style.backgroundColor="#00B4F4";
+                            watch(agvMission, agvText, buttonColor,timerName,misCodes,flag);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    // 监控：让按钮变色以及显示文字
+    // 参数：按钮，对应的显示的text,按钮颜色,定时器名称,订单编号，按钮标识
+    function watch(agvMission,agvText,buttonColor,timeName,misCodes,flag) {
+        console.log(misCodes);
+        timeName = setInterval(function(){
+            watching(agvMission ,agvText,buttonColor,timeName,misCodes,flag)
+        }, 500);
+        console.log(timeName)
+    }
+
+
+
+    function watching(agvMission, agvText, buttonColor,timeName,misCodes,flag) {
+        console.log(misCodes);
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: "5",
+                taskCodes: misCodes
+            },
+            async: true,
+            success: function (mes1) {
+                $.ajax({
+                    url: "http://10.18.2.36:9998/rcms/services/rest/hikRpcService/queryTaskStatus",
+                    type: "post",
+                    dataType: "json",
+                    data: mes1,
+                    async: true,
+                    success: function (mes2) {
+                        console.log(mes2)
+                        monitor = mes2.data[0].taskStatus;
+                        var misNum;
+                        //保存是哪个按钮任务
+                        var flagNum=flag;
+                        function misName(){
+                            if(flag%10 == 1){
+                                misNum="一";
+                            }
+                            if(flag%10 == 2){
+                                misNum="二";
+                            }
+                            if(flag%10 == 3){
+                                misNum="三";
+                            }
+                            if(flag%10 == 4){
+                                misNum="四";
+                            }
+                        }
+                        misName();
+
+                        switch (monitor) {
+                            case "1":
+                                agvMission.style.backgroundColor = buttonColor;
+                                agvText.value = "任务"+misNum+"已创建！";
+                                changeCol(flag);
+                                break;
+                            case "2":
+                                agvMission.style.backgroundColor = buttonColor;
+                                changeCol(flag);
+                                agvText.value = "任务"+misNum+"正在执行！";
+                                break;
+                            case "5":
+                                agvMission.style.backgroundColor = "";
+                                agvText.value = "取消任务"+misNum+"！";
+                                clearInterval(timeName);
+                                QueryAgv();
+                                break;
+                            case "9":
+                                agvMission.style.backgroundColor = "";
+                                agvText.value = "送货已结束！";
+                                clearInterval(timeName);
+                                QueryAgv();
+                                break;
+                        }
+                        if (monitor == "9" || monitor == "5") {
+                            if(flag<20){
+                                flag=10;
+                            }
+                            if(flag>20 && flag<30){
+                                flag=20;
+                            }
+                            if(flag>30 && flag<40){
+                                flag=30;
+                            }
+                            if(flag>40 && flag<50){
+                                flag=40;
+                            }
+                            changeCol(flag);
+                            flag=flagNum;
+                            clearInterval(timeName);
+                            QueryAgv();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function changeCol(flag) {
+        console.log("gfhjlk");
+        if(flag==11){
+            n1Task2.disabled="disabled";
+            n1Task3.disabled="disabled";
+            n1Task4.disabled="disabled";
+
+            n1Task1.disabled="disabled";
+        }
+        if(flag==12){
+            n1Task1.disabled="disabled";
+            n1Task3.disabled="disabled";
+            n1Task4.disabled="disabled";
+
+            n1Task2.disabled="disabled";
+        }
+        if(flag==13){
+            n1Task2.disabled="disabled";
+            n1Task1.disabled="disabled";
+            n1Task4.disabled="disabled";
+
+            n1Task3.disabled="disabled";
+        }
+        if(flag==14){
+            n1Task2.disabled="disabled";
+            n1Task3.disabled="disabled";
+            n1Task1.disabled="disabled";
+
+            n1Task4.disabled="disabled";
+        }
+        if(flag==10){
+            n1Task1.disabled="";
+            n1Task2.disabled="";
+            n1Task3.disabled="";
+            n1Task4.disabled="";
+        }
+        if(flag==21){
+            n2Task2.disabled="disabled";
+            n2Task3.disabled="disabled";
+            n2Task4.disabled="disabled";
+
+            n2Task1.disabled="disabled";
+
+        }
+        if(flag==22){
+            n2Task1.disabled="disabled";
+            n2Task3.disabled="disabled";
+            n2Task4.disabled="disabled";
+
+            n2Task2.disabled="disabled";
+        }
+        if(flag==23){
+            n2Task2.disabled="disabled";
+            n2Task1.disabled="disabled";
+            n2Task4.disabled="disabled";
+
+            n2Task3.disabled="disabled";
+        }
+        if(flag==24){
+            n2Task2.disabled="disabled";
+            n2Task3.disabled="disabled";
+            n2Task1.disabled="disabled";
+
+            n2Task4.disabled="disabled";
+        }
+        if(flag==20){
+            n2Task1.disabled="";
+            n2Task2.disabled="";
+            n2Task3.disabled="";
+            n2Task4.disabled="";
+        }
+        if(flag==31){
+            n3Task2.disabled="disabled";
+            n3Task3.disabled="disabled";
+            n3Task4.disabled="disabled";
+
+            n3Task1.disabled="disabled";
+        }
+        if(flag==32){
+            n3Task1.disabled="disabled";
+            n3Task3.disabled="disabled";
+            n3Task4.disabled="disabled";
+
+            n3Task2.disabled="disabled";
+        }
+        if(flag==33){
+            n3Task2.disabled="disabled";
+            n3Task1.disabled="disabled";
+            n3Task4.disabled="disabled";
+
+            n3Task3.disabled="disabled";
+        }
+        if(flag==34){
+            n3Task2.disabled="disabled";
+            n3Task3.disabled="disabled";
+            n3Task1.disabled="disabled";
+
+            n3Task4.disabled="disabled";
+        }
+        if(flag==30){
+            n2Task1.disabled="";
+            n2Task2.disabled="";
+            n2Task3.disabled="";
+            n2Task4.disabled="";
+        }
+        if(flag ==41){
+            Q3Task.disabled="disabled";
+        }
+        if(flag == 40){
+            Q3Task.disabled="";
+        }
+    }
+
+    //停止任务
+    function stopAgv(missionNum,agvNum,agvMission,agvText){
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: missionNum,
+                agv: agvNum
+            },
+            async: true,
+            success: function (response) {
+                console.log(response);
+                if (response != null) {
+                    $.ajax({
+                        url: "http://10.18.2.36:9998/rcms/services/rest/hikRpcService/cancelTask",
+                        type: "post",
+                        dataType: "json",
+                        data: response,
+                        async: true,
+                        success: function (content) {
+                            agvText.value="开始执行取消任务！";
+                            // speak('开始执行取消任务！');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function QueryAgv(){
+        //查询agv状态
+        TIMER=setInterval(function () {
+            queryAgv()
+        },5000)
+
+    }
+
+    function queryAgv(){
+        $.ajax({
+            url: "/ajax",
+            type: "post",
+            // dataType: "json",
+            data: {
+                mission: "8",
+            },
+            async: true,
+            success: function (response1) {
+                $.ajax({
+                    url: "http://10.18.2.36:9998/rcms-dps/rest/queryAgvStatus",
+                    type: "post",
+                    dataType: "json",
+                    data: response1,
+                    async: true,
+                    success: function (response2) {
+                        console.log(response2);
+                        var obj1=JSON.parse(response2)
+                        var obj2=obj1.data
+                        console.log(obj2)
+                        for(var i=0;i<obj2.length;i++){
+                            //Q2-1
+                            if(obj2[i].robotCode=="348"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN1,"Q2-1")
+                            }
+
+                            //Q2-2
+                            if(obj2[i].robotCode=="105"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN2,"Q2-2")
+                            }
+
+                            //Q2-3
+                            if(obj2[i].robotCode=="1003"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN3,"Q2-3")
+                            }
+
+                            //Q3
+                            if(obj2[i].robotCode=="1004"){
+                                console.log(obj2[i].status)
+                                var status=obj2[i].status
+                                agvStatus(status,textN1,"Q3")
+                            }
+                        }
+
+                    }
+                })
+            }
+        })
+    }
+
+    function agvStatus(status,agvText,agvNum) {
+        var flag;
+        switch (status) {
+            case "1":
+                agvText.value = "任务完成！";
+                if(agvNum=="Q2-1"){flag=10}
+                if(agvNum=="Q2-2"){flag=20}
+                if(agvNum=="Q2-3"){flag=30}
+                if(agvNum=="Q3"){flag=40}
+                changeCol(flag)
+                break;
+            case "2":
+                agvText.value = "任务执行中！";
+                if(agvNum=="Q2-1"){flag=11}
+                if(agvNum=="Q2-2"){flag=21}
+                if(agvNum=="Q2-3"){flag=31}
+                if(agvNum=="Q3"){flag=41}
+                changeCol(flag)
+                break;
+            case "3":
+                agvText.value = "任务异常";
+                break;
+            case "4":
+                agvText.value = "待命";
+                if(agvNum=="Q2-1"){flag=10}
+                if(agvNum=="Q2-2"){flag=20}
+                if(agvNum=="Q2-3"){flag=30}
+                if(agvNum=="Q3"){flag=40}
+                changeCol(flag)
+                break;
+            case "5":
+                agvText.value = "机器人暂停";
+                break;
+            case "6":
+                agvText.value = "举升货架状态";
+                break;
+            case "7":
+                agvText.value = "充电状态";
+                break;
+            case "8":
+                agvText.value = "弧线行走中";
+                break;
+            case "9":
+                agvText.value = "充满维护";
+                break;
+            case "11":
+                agvText.value = "背货未识别";
+                break;
+            case "12":
+                agvText.value = "货架偏角过大";
+                break;
+            case "13":
+                agvText.value = "运动库异常";
+                break;
+            case "14":
+                agvText.value = "货码无法识别";
+                break;
+            case "15":
+                agvText.value = "货码不匹配";
+                break;
+            case "16":
+                agvText.value = "举升异常";
+                break;
+            case "17":
+                agvText.value = "充电桩异常";
+                break;
+            case "18":
+                agvText.value = "电量无增加";
+                break;
+            case "20":
+                agvText.value = "充电指令角度错误";
+                break;
+            case "21":
+                agvText.value = "平台下发指令错误";
+                break;
+            case "23":
+                agvText.value = "外力下放";
+                break;
+            case "24":
+                agvText.value = "货架位置偏移";
+                break;
+            case "25":
+                agvText.value = "小车不在锁定区";
+                break;
+            case "26":
+                agvText.value = "下放重试失败";
+                break;
+            case "27":
+                agvText.value = "货架摆歪";
+                break;
+            case "28":
+                agvText.value = "举升电池电量太低";
+                break;
+            case "29":
+                agvText.value = "后退角度偏大";
+                break;
+            case "30":
+                agvText.value = "未背货架举升";
+                break;
+            case "31":
+                agvText.value = "区域锁定失败";
+                break;
+            case "33":
+                agvText.value = "旋转申请暂时失败";
+                break;
+            case "34":
+                agvText.value = "地图切换点地码未识别";
+                break;
+        }
+    }
+
+
+    //语音功能
+    function speak(sentence) {
+        const utterance = new SpeechSynthesisUtterance(sentence)
+        window.speechSynthesis.speak(utterance)
+    }
+
+
+    n1Task1.onclick=function (){
+        task("1","Q2-1",n1Task1,textN1,"#3c763d",n1Timer1,flag11)};
+
+    n1Task2.onclick=function () {
+        task("2","Q2-1",n1Task2,textN1,"#3c763d",n1Timer2,flag12);
+    }
+    n1Task3.onclick=function () {
+        task("3","Q2-1",n1Task3,textN1,"#3c763d",n1Timer3,flag13);
+    }
+    n1Task4.onclick=function (){
+        task("4","Q2-1",n1Task4,textN1,"#3c763d",n1Timer4,flag14);
+    }
+    //
+    n2Task1.onclick=function (){
+        task("1","Q2-2",n2Task1,textN2,"#3c763d",n2Timer1,flag21)};
+
+    n2Task2.onclick=function () {
+        task("2","Q2-2",n2Task2,textN2,"#3c763d",n2Timer2,flag22);
+    }
+    n2Task3.onclick=function () {
+        task("3","Q2-2",n2Task3,textN2,"#3c763d",n2Timer3,flag23);
+    }
+    n2Task4.onclick=function (){
+        task("4","Q2-2",n2Task4,textN2,"#3c763d",n2Timer4,flag24);
+    }
+
+    n3Task1.onclick=function (){
+        task("1","Q2-3",n3Task1,textN3,"#3c763d",n3Timer1,flag31)};
+
+    n3Task2.onclick=function () {
+        task("2","Q2-3",n3Task2,textN3,"#3c763d",n3Timer2,flag32);
+    }
+    n3Task3.onclick=function () {
+        task("3","Q2-3",n3Task3,textN3,"#3c763d",n3Timer3,flag33);
+    }
+    n3Task4.onclick=function (){
+        task("4","Q2-3",n3Task4,textN3,"#3c763d",n3Timer4,flag34);
+    }
+    Q3Task.onclick=function () {
+        task("7","Q3",Q3Task,textQ3,"#3c763d",Q3Timer,flag41);
+    }
+
+    n1Stop.onclick=function () {
+        stopAgv("6","Q2-1",n1Stop,textN1);
+    }
+    n2Stop.onclick=function () {
+        stopAgv("6","Q2-2",n2Stop,textN2);
+    }
+    n3Stop.onclick=function () {
+        stopAgv("6","Q2-3",n3Stop,textN3);
+    }
+    Q3Stop.onclick=function () {
+        stopAgv("6","Q3",Q3Stop,textQ3);
+    }
+
+
+</script>
+</html>
